@@ -1,14 +1,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Player : public sf::CircleShape
+class Player
 {
+	
+	sf::Texture texture = sf::Texture("Assets\\sprite.png");
+	sf::Sprite sprite = sf::Sprite(texture);
+	sf::Angle rotation;
+	float speed = 0.2f, rotationSpeed = 3.f;
 	public:
-		Player(sf::Texture* texture = nullprt)
-		{
-			setRadius(50.f);
-			setFillColor(sf::Color::Green);
-			setPosition(sf::Vector2f(960.f, 540.f));
-		}
+		Player();
+		void Movement();
+		sf::Sprite& getSprite() { return sprite; }
+		
 
 };

@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include "PlayerMovement.h"
+#include "Player.h"
 
 const int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080, BORDER_SIZE = 50;
 const float PLAYER_SIZE = 50.f;
@@ -18,10 +18,7 @@ vector<sf::VertexArray*> Objects;
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({ SCREEN_WIDTH, SCREEN_HEIGHT }), "SFML works!");
-    sf::CircleShape shape(PLAYER_SIZE);
-    shape.setPosition(sf::Vector2f(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f));
-    sf::Clock deltaClock;
-    shape.setFillColor(sf::Color::Green);
+    Player player;
 
     InitializeWalls();
 
@@ -33,21 +30,18 @@ int main()
                 window.close();
         }
 
-        cout << shape.getPosition().x << " " << shape.getPosition().y << endl;
 
 
-        HandlePlayerMovement(shape);
 
-        
+        player.Movement();
 
-        window.clear();
+        window.clear(sf::Color::Blue);
         DrawObjects(window);
-        //window.draw(line);
-        //window.draw(lin);
-        window.draw(shape);
+
+        window.draw(player.getSprite());
         window.display();
 
-        deltaClock.restart();
+        
     }
 }
 

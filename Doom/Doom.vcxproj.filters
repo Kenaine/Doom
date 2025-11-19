@@ -18,14 +18,11 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMovement.cpp">
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerMovement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -34,7 +31,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Desktop\sprite.png">
+    <Image Include="Assets\sprite.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
