@@ -1,9 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include <cmath>
+#include <filesystem>
 
 Player::Player()
 {
+	std::string path = "Assets/sprite.png";
+#ifdef _WIN32
+    path = "Assets\\sprite.png";
+#endif
+
+	if (!texture.loadFromFile(path)) {
+		// error handling
+	}
+
 	sprite.setPosition(sf::Vector2f(960.f, 540.f));
 	sprite.setOrigin(sf::Vector2f(texture.getSize().x / 2.f, texture.getSize().y / 2.f));
 	sprite.setRotation(rotation);
