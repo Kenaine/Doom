@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/ken/projects/Doom/Doom/Player.cpp" "CMakeFiles/doom.dir/Doom/Player.cpp.o" "gcc" "CMakeFiles/doom.dir/Doom/Player.cpp.o.d"
   "/home/ken/projects/Doom/Doom/RayCaster.cpp" "CMakeFiles/doom.dir/Doom/RayCaster.cpp.o" "gcc" "CMakeFiles/doom.dir/Doom/RayCaster.cpp.o.d"
+  "/home/ken/projects/Doom/Doom/Renderer3D.cpp" "CMakeFiles/doom.dir/Doom/Renderer3D.cpp.o" "gcc" "CMakeFiles/doom.dir/Doom/Renderer3D.cpp.o.d"
   "/home/ken/projects/Doom/Doom/main.cpp" "CMakeFiles/doom.dir/Doom/main.cpp.o" "gcc" "CMakeFiles/doom.dir/Doom/main.cpp.o.d"
   )
 

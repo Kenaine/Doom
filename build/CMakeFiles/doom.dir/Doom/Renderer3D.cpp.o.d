@@ -1,5 +1,6 @@
-CMakeFiles/doom.dir/Doom/main.cpp.o: \
- /home/ken/projects/Doom/Doom/main.cpp /usr/include/stdc-predef.h \
+CMakeFiles/doom.dir/Doom/Renderer3D.cpp.o: \
+ /home/ken/projects/Doom/Doom/Renderer3D.cpp /usr/include/stdc-predef.h \
+ /home/ken/projects/Doom/Doom/Renderer3D.h \
  /home/ken/projects/Doom/include/SFML/Graphics.hpp \
  /home/ken/projects/Doom/include/SFML/Graphics/BlendMode.hpp \
  /home/ken/projects/Doom/include/SFML/Graphics/Export.hpp \
@@ -277,10 +278,8 @@ CMakeFiles/doom.dir/Doom/main.cpp.o: \
  /home/ken/projects/Doom/include/SFML/System/InputStream.hpp \
  /home/ken/projects/Doom/include/SFML/System/MemoryInputStream.hpp \
  /home/ken/projects/Doom/include/SFML/System/Sleep.hpp \
- /usr/include/c++/13/iostream /home/ken/projects/Doom/Doom/Player.h \
- /home/ken/projects/Doom/Doom/Wall.h \
- /home/ken/projects/Doom/Doom/RayCaster.h /usr/include/c++/13/cmath \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/c++/13/cmath /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
@@ -301,4 +300,5 @@ CMakeFiles/doom.dir/Doom/main.cpp.o: \
  /usr/include/c++/13/tr1/poly_hermite.tcc \
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
  /usr/include/c++/13/tr1/riemann_zeta.tcc \
- /home/ken/projects/Doom/Doom/Renderer3D.h
+ /home/ken/projects/Doom/Doom/RayCaster.h \
+ /home/ken/projects/Doom/Doom/Player.h

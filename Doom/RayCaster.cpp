@@ -12,6 +12,7 @@ RayCaster::RayCaster(std::vector<Wall*>& wallObjects) : wallObjects(wallObjects)
 void RayCaster::castRays(Player& player)
 {
     intersections.clear();
+    distances.clear();  // Clear previous distances
 
     sf::Vector2f playerPos = player.getSprite().getPosition();
     float playerAngle = player.getSprite().getRotation().asRadians();
@@ -27,6 +28,8 @@ void RayCaster::castRays(Player& player)
         float currentAngle = startAngle + (angleStep * i);
         float distance = 0.f;
         sf::Vector2f hitPoint = castSingleRay(player, currentAngle, distance);
+
+        distances.push_back(distance);  // Store distance
 
         rayFan[i + 1].position = hitPoint;
         rayFan[i + 1].color = sf::Color(0, 0, 255, 100);

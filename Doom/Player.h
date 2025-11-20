@@ -8,16 +8,15 @@ class Player
 {
 public:
     Player();
-    void Movement(const std::vector<Wall>& wallObjects);
-    void Draw(sf::RenderWindow& window);
-    sf::Sprite& getSprite() { return sprite; }
-    
+    void Movement(std::vector<Wall>& wallObjects);
+    sf::Sprite& getSprite();
+
 private:
-    sf::Sprite sprite;
     sf::Texture texture;
+    sf::Sprite sprite;
+    sf::Vector2f velocity;
     sf::Angle rotation;
-    float speed;
     
-    float degreesToRadians(float degrees);
     bool isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects);
+    float degreesToRadians(float degrees);
 };

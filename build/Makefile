@@ -177,6 +177,30 @@ Doom/RayCaster.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/doom.dir/build.make CMakeFiles/doom.dir/Doom/RayCaster.cpp.s
 .PHONY : Doom/RayCaster.cpp.s
 
+Doom/Renderer3D.o: Doom/Renderer3D.cpp.o
+.PHONY : Doom/Renderer3D.o
+
+# target to build an object file
+Doom/Renderer3D.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/doom.dir/build.make CMakeFiles/doom.dir/Doom/Renderer3D.cpp.o
+.PHONY : Doom/Renderer3D.cpp.o
+
+Doom/Renderer3D.i: Doom/Renderer3D.cpp.i
+.PHONY : Doom/Renderer3D.i
+
+# target to preprocess a source file
+Doom/Renderer3D.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/doom.dir/build.make CMakeFiles/doom.dir/Doom/Renderer3D.cpp.i
+.PHONY : Doom/Renderer3D.cpp.i
+
+Doom/Renderer3D.s: Doom/Renderer3D.cpp.s
+.PHONY : Doom/Renderer3D.s
+
+# target to generate assembly for a file
+Doom/Renderer3D.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/doom.dir/build.make CMakeFiles/doom.dir/Doom/Renderer3D.cpp.s
+.PHONY : Doom/Renderer3D.cpp.s
+
 Doom/main.o: Doom/main.cpp.o
 .PHONY : Doom/main.o
 
@@ -216,6 +240,9 @@ help:
 	@echo "... Doom/RayCaster.o"
 	@echo "... Doom/RayCaster.i"
 	@echo "... Doom/RayCaster.s"
+	@echo "... Doom/Renderer3D.o"
+	@echo "... Doom/Renderer3D.i"
+	@echo "... Doom/Renderer3D.s"
 	@echo "... Doom/main.o"
 	@echo "... Doom/main.i"
 	@echo "... Doom/main.s"

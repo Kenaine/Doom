@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/doom.dir/Doom/main.cpp.o CMakeFiles/doom.dir/Doom/Player.cpp.o CMakeFiles/doom.dir/Doom/RayCaster.cpp.o -o doom   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio 
+/usr/bin/c++ CMakeFiles/doom.dir/Doom/main.cpp.o CMakeFiles/doom.dir/Doom/Player.cpp.o CMakeFiles/doom.dir/Doom/RayCaster.cpp.o CMakeFiles/doom.dir/Doom/Renderer3D.cpp.o -o doom   -L/home/ken/projects/Doom/lib  -Wl,-rpath,/home/ken/projects/Doom/lib -lsfml-graphics -lsfml-window -lsfml-system 

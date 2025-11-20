@@ -1,14 +1,16 @@
 #include <iostream>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Wall.h"
-#include <cmath>
+
+extern std::vector<Wall> collisionBorderWalls;
 
 Player::Player() : sprite(texture)
 {
-    std::string path = "Assets/sprite.png";
+    std::string path = "../Assets/sprite.png";
 #ifdef _WIN32
-    path = "Assets\\sprite.png";
+    path = "..\\Assets\\sprite.png";
 #endif
 
     if (!texture.loadFromFile(path)) {
@@ -17,80 +19,85 @@ Player::Player() : sprite(texture)
     
     std::cout << "Texture size: " << texture.getSize().x << " x " << texture.getSize().y << std::endl;
     
-    // Create sprite with loaded texture
     sprite = sf::Sprite(texture);
     
-    // Start at bottom-right entrance
     sprite.setPosition(sf::Vector2f(1800.f, 980.f));
     sprite.setOrigin(sf::Vector2f(texture.getSize().x / 2.f, texture.getSize().y / 2.f));
     sprite.setRotation(rotation);
     
-    // Fixed scale
-    sprite.setScale(sf::Vector2f(1.5f, 1.5f));
+    sprite.setScale(sf::Vector2f(5.0f, 5.0f));
 }
 
-void Player::Movement(const std::vector<Wall>& wallObjects)
+sf::Sprite& Player::getSprite()
+{
+    return sprite;
+}
+
+void Player::Movement(std::vector<Wall>& walls)
 {
     float speed = 5.0f;
-    
+    sf::Vector2f oldPos = sprite.getPosition();
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
     {
         float xVector = std::cos(degreesToRadians(rotation.asDegrees())) * speed;
         float yVector = std::sin(degreesToRadians(rotation.asDegrees())) * speed;
-        
-        sf::Vector2f newPos = sprite.getPosition() + sf::Vector2f(xVector, yVector);
-        
-        if (!isCollidingWithWalls(newPos, wallObjects))
+        sf::Vector2f newPos(oldPos.x + xVector, oldPos.y + yVector);
+
+        if (!isCollidingWithWalls(newPos, walls))
         {
             sprite.setPosition(newPos);
         }
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
         float xVector = std::cos(degreesToRadians(rotation.asDegrees())) * speed;
         float yVector = std::sin(degreesToRadians(rotation.asDegrees())) * speed;
-        
-        sf::Vector2f newPos = sprite.getPosition() + sf::Vector2f(-xVector, -yVector);
-        
-        if (!isCollidingWithWalls(newPos, wallObjects))
+        sf::Vector2f newPos(oldPos.x - xVector, oldPos.y - yVector);
+
+        if (!isCollidingWithWalls(newPos, walls))
         {
             sprite.setPosition(newPos);
         }
     }
-    
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
     {
-        rotation += sf::degrees(-3.0f);
+        rotation = rotation - sf::degrees(5.f);
+        sprite.setRotation(rotation);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
     {
-        rotation += sf::degrees(3.0f);
+        rotation = rotation + sf::degrees(5.f);
+        sprite.setRotation(rotation);
     }
     
-    // Apply rotation to sprite
-    sprite.setRotation(rotation);
+    // Check collision with border walls
+    for (auto& wall : collisionBorderWalls)
+    {
+        if (wall.isCollidingWith(sprite.getPosition(), 20.f))
+        {
+            sprite.setPosition(oldPos);
+            return;
+        }
+    }
 }
 
 bool Player::isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects)
 {
-    float radius = 20.0f;
-    
-    // Check borders
-    if (newPosition.x - radius < 50.f || newPosition.x + radius > 1920 - 50.f ||
-        newPosition.y - radius < 50.f || newPosition.y + radius > 1080 - 50.f)
-        return true;
-    
-    // Check collision with all walls
     for (const auto& wall : wallObjects)
     {
-        if (wall.isCollidingWith(newPosition, radius))
+        if (wall.isCollidingWith(newPosition, 20.f))
+        {
             return true;
+        }
     }
-    
     return false;
 }
 
 float Player::degreesToRadians(float degrees)
 {
-	return degrees * 3.14159265359f / 180.f;
+    return degrees * 3.14159265359f / 180.f;
 }
