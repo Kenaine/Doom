@@ -1,0 +1,3 @@
+/home/ken/projects/Doom/build/CMakeFiles/doom.dir
+/home/ken/projects/Doom/build/CMakeFiles/edit_cache.dir
+/home/ken/projects/Doom/build/CMakeFiles/rebuild_cache.dir
