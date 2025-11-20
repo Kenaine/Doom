@@ -4,10 +4,10 @@
 class Player
 {
 	
-	sf::Texture texture = sf::Texture("Assets\\sprite.png");
+	sf::Texture texture = sf::Texture("Assets/sprite.png");
 	sf::Sprite sprite = sf::Sprite(texture);
 	sf::Angle rotation = sf::degrees(180.f);
-	float speed = 0.2f, rotationSpeed = 0.2f;
+	float speed = 3.0f, rotationSpeed = 0.8f;
 
 	float degreesToRadians(float);
 	public:
