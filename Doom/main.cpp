@@ -3,6 +3,7 @@
 #include <vector>
 #include "Player.h"
 #include "RayCaster.h"
+#include "Wall.h"
 
 const int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080, BORDER_SIZE = 50;
 const float PLAYER_SIZE = 50.f;
@@ -14,6 +15,8 @@ void setWalls(sf::VertexArray*, sf::Vector2f, sf::Vector2f, sf::Vector2f, sf::Ve
 void DrawObjects(sf::RenderWindow&);
 
 vector<sf::VertexArray*> Objects;
+std::vector<sf::VertexArray*> walls;
+std::vector<Wall> wallObjects;  // Add this to keep Wall objects alive
 RayCaster* rayCaster = nullptr;
 
 int main()
@@ -48,11 +51,15 @@ int main()
 
 void InitializeWalls()
 {
-    sf::VertexArray* walls = new sf::VertexArray(sf::PrimitiveType::LineStrip, 5);
-    setWalls(walls, sf::Vector2f(0.f + BORDER_SIZE, 0.f + BORDER_SIZE), sf::Vector2f(SCREEN_WIDTH - BORDER_SIZE, 0.f + BORDER_SIZE),
+    sf::VertexArray* borderWalls = new sf::VertexArray(sf::PrimitiveType::LineStrip, 5);
+    setWalls(borderWalls, sf::Vector2f(0.f + BORDER_SIZE, 0.f + BORDER_SIZE), sf::Vector2f(SCREEN_WIDTH - BORDER_SIZE, 0.f + BORDER_SIZE),
         sf::Vector2f(SCREEN_WIDTH - BORDER_SIZE, SCREEN_HEIGHT - BORDER_SIZE), sf::Vector2f(0.f + BORDER_SIZE, SCREEN_HEIGHT - BORDER_SIZE));
 
-    Objects.push_back(walls);
+    Objects.push_back(borderWalls);
+
+    // Create a rectangle in the middle of the map (x, y, size)
+    wallObjects.push_back(Wall(400.f, 300.f, 150.f));  // Store in vector
+    Objects.push_back(wallObjects.back().getVertices());
 }
 
 void setWalls(sf::VertexArray* wall, sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3, sf::Vector2f point4)
