@@ -300,4 +300,5 @@ CMakeFiles/doom.dir/Doom/RayCaster.cpp.o: \
  /usr/include/c++/13/tr1/poly_hermite.tcc \
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
  /usr/include/c++/13/tr1/riemann_zeta.tcc \
- /home/ken/projects/Doom/Doom/Player.h /usr/include/c++/13/iostream
+ /home/ken/projects/Doom/Doom/Player.h \
+ /home/ken/projects/Doom/Doom/Wall.h /usr/include/c++/13/iostream

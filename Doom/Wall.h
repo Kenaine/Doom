@@ -7,32 +7,27 @@ public:
     Wall(float x, float y, float width, float height)
         : x(x), y(y), width(width), height(height)
     {
-        vertices.setPrimitiveType(sf::PrimitiveType::LineStrip);
+        vertices.setPrimitiveType(sf::PrimitiveType::TriangleStrip);
         
         sf::Vertex v1;
         v1.position = sf::Vector2f(x, y);
-        v1.color = sf::Color::Black;
+        v1.color = sf::Color(128, 128, 128);  // Grey fill
         vertices.append(v1);
         
         sf::Vertex v2;
         v2.position = sf::Vector2f(x + width, y);
-        v2.color = sf::Color::Black;
+        v2.color = sf::Color(128, 128, 128);  // Grey fill
         vertices.append(v2);
         
         sf::Vertex v3;
-        v3.position = sf::Vector2f(x + width, y + height);
-        v3.color = sf::Color::Black;
+        v3.position = sf::Vector2f(x, y + height);
+        v3.color = sf::Color(128, 128, 128);  // Grey fill
         vertices.append(v3);
         
         sf::Vertex v4;
-        v4.position = sf::Vector2f(x, y + height);
-        v4.color = sf::Color::Black;
+        v4.position = sf::Vector2f(x + width, y + height);
+        v4.color = sf::Color(128, 128, 128);  // Grey fill
         vertices.append(v4);
-        
-        sf::Vertex v5;
-        v5.position = sf::Vector2f(x, y);
-        v5.color = sf::Color::Black;
-        vertices.append(v5);
     }
 
     sf::VertexArray* getVertices() { return &vertices; }

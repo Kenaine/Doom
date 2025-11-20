@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Wall.h"
@@ -11,14 +12,20 @@ Player::Player() : sprite(texture)
 #endif
 
     if (!texture.loadFromFile(path)) {
-        // error handling
+        std::cerr << "Failed to load texture from: " << path << std::endl;
     }
     
-    // Start at bottom-right entrance, moved down more
-    sprite.setPosition(sf::Vector2f(1800.f, 980.f));  // Changed from 950.f to 980.f
+    std::cout << "Texture size: " << texture.getSize().x << " x " << texture.getSize().y << std::endl;
+    
+    // Create sprite with loaded texture
+    sprite = sf::Sprite(texture);
+    
+    // Start at bottom-right entrance
+    sprite.setPosition(sf::Vector2f(1800.f, 980.f));
     sprite.setOrigin(sf::Vector2f(texture.getSize().x / 2.f, texture.getSize().y / 2.f));
     sprite.setRotation(rotation);
     
+    // Fixed scale
     sprite.setScale(sf::Vector2f(1.5f, 1.5f));
 }
 

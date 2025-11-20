@@ -25,7 +25,7 @@ int main()
     Player player;
 
     InitializeWalls();
-    rayCaster = new RayCaster(Objects);
+    // rayCaster is now initialized in InitializeWalls(), don't create it again here
 
     while (window.isOpen())
     {
@@ -57,23 +57,43 @@ void InitializeWalls()
 
     Objects.push_back(borderWalls);
 
-    float thickness = 20.f;  // Wall thickness
+    float thickness = 20.f;
     
-    // Top row of boxes (3 boxes with vertical dividers)
+    // Create all wall objects for collision and rendering
     wallObjects.push_back(Wall(100.f, 120.f, 250.f, thickness));
     wallObjects.push_back(Wall(600.f, 120.f, 1200.f, thickness));
     wallObjects.push_back(Wall(100.f, 800.f, 1500.f, thickness));
 
+    // Horizontal inner walls
+    wallObjects.push_back(Wall(350.f, 350.f, 450.f, thickness));
+    wallObjects.push_back(Wall(350.f, 600.f, 700.f, thickness));
+    wallObjects.push_back(Wall(1050.f, 350.f, 550.f, thickness));
     
+    // Vertical inner walls
+    wallObjects.push_back(Wall(350.f, 120.f, thickness, 250.f));
+    wallObjects.push_back(Wall(1050.f, 120.f, thickness, 500.f));
+    wallObjects.push_back(Wall(1580.f, 600.f, thickness, 200.f));
+    wallObjects.push_back(Wall(1320.f, 350.f, thickness, 270.f));
+
+    
+    // Vertical Borders
     wallObjects.push_back(Wall(100.f, 120.f, thickness, 700.f));     
-    wallObjects.push_back(Wall(1800.f, 120.f, thickness, 700.f));    
+    wallObjects.push_back(Wall(1800.f, 120.f, thickness, 700.f));
     
+    // Create vertex arrays for raycasting
+    std::vector<sf::VertexArray*> raycastWalls;
     
-    // Add all walls to Objects for rendering
     for (auto& wall : wallObjects)
     {
-        Objects.push_back(wall.getVertices());
+        raycastWalls.push_back(wall.getVertices());
     }
+    
+    std::vector<Wall*> wallPtrs;
+    for (auto& wall : wallObjects)
+    {
+        wallPtrs.push_back(&wall);
+    }
+    rayCaster = new RayCaster(wallPtrs);
 }
 
 void setWalls(sf::VertexArray* wall, sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3, sf::Vector2f point4)
@@ -93,8 +113,14 @@ void setWalls(sf::VertexArray* wall, sf::Vector2f point1, sf::Vector2f point2, s
 
 void DrawObjects(sf::RenderWindow& window)
 {
-    for (auto object : Objects)
+    for (int i = 0; i < Objects.size(); i++)
     {
-        window.draw(*object);
+        window.draw(*Objects[i]);
+    }
+    
+    // Draw walls using vertex arrays
+    for (auto& wall : wallObjects)
+    {
+        window.draw(*wall.getVertices());
     }
 }
