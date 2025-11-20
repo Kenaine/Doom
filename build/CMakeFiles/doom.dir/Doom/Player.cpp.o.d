@@ -277,7 +277,8 @@ CMakeFiles/doom.dir/Doom/Player.cpp.o: \
  /home/ken/projects/Doom/include/SFML/System/InputStream.hpp \
  /home/ken/projects/Doom/include/SFML/System/MemoryInputStream.hpp \
  /home/ken/projects/Doom/include/SFML/System/Sleep.hpp \
- /home/ken/projects/Doom/Doom/Player.h /usr/include/c++/13/cmath \
+ /home/ken/projects/Doom/Doom/Player.h \
+ /home/ken/projects/Doom/Doom/Wall.h /usr/include/c++/13/cmath \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \

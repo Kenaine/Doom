@@ -1,22 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
+
+class Wall;
 
 class Player
 {
-	
-	sf::Texture texture = sf::Texture("Assets/sprite.png");
-	sf::Sprite sprite = sf::Sprite(texture);
-	sf::Angle rotation = sf::degrees(180.f);
-	float speed = 3.0f, rotationSpeed = 0.8f;
-
-	float degreesToRadians(float);
-	private:
-		bool isCollidingWithWalls(const sf::Vector2f& newPosition);
-
-	public:
-		Player();
-		void Movement();
-		sf::Sprite& getSprite() { return sprite; }
-		
-
+public:
+    Player();
+    void Movement(const std::vector<Wall>& wallObjects);
+    void Draw(sf::RenderWindow& window);
+    sf::Sprite& getSprite() { return sprite; }
+    
+private:
+    sf::Sprite sprite;
+    sf::Texture texture;
+    sf::Angle rotation;
+    float speed;
+    
+    float degreesToRadians(float degrees);
+    bool isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects);
 };

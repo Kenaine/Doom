@@ -35,7 +35,7 @@ int main()
                 window.close();
         }
 
-        player.Movement();
+        player.Movement(wallObjects);
         rayCaster->castRays(player);
 
         window.clear(sf::Color::White);
@@ -57,9 +57,23 @@ void InitializeWalls()
 
     Objects.push_back(borderWalls);
 
-    // Create a rectangle in the middle of the map (x, y, size)
-    wallObjects.push_back(Wall(400.f, 300.f, 150.f));  // Store in vector
-    Objects.push_back(wallObjects.back().getVertices());
+    float thickness = 20.f;  // Wall thickness
+    
+    // Top row of boxes (3 boxes with vertical dividers)
+    wallObjects.push_back(Wall(100.f, 120.f, 250.f, thickness));
+    wallObjects.push_back(Wall(600.f, 120.f, 1200.f, thickness));
+    wallObjects.push_back(Wall(100.f, 800.f, 1500.f, thickness));
+
+    
+    wallObjects.push_back(Wall(100.f, 120.f, thickness, 700.f));     
+    wallObjects.push_back(Wall(1800.f, 120.f, thickness, 700.f));    
+    
+    
+    // Add all walls to Objects for rendering
+    for (auto& wall : wallObjects)
+    {
+        Objects.push_back(wall.getVertices());
+    }
 }
 
 void setWalls(sf::VertexArray* wall, sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3, sf::Vector2f point4)

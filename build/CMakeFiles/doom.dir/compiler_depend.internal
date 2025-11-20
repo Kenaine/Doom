@@ -4,6 +4,7 @@
 CMakeFiles/doom.dir/Doom/Player.cpp.o
  /home/ken/projects/Doom/Doom/Player.cpp
  /home/ken/projects/Doom/Doom/Player.h
+ /home/ken/projects/Doom/Doom/Wall.h
  /home/ken/projects/Doom/include/SFML/Config.hpp
  /home/ken/projects/Doom/include/SFML/Graphics.hpp
  /home/ken/projects/Doom/include/SFML/Graphics/BlendMode.hpp
