@@ -10,6 +10,9 @@ class Player
 	float speed = 3.0f, rotationSpeed = 0.8f;
 
 	float degreesToRadians(float);
+	private:
+		bool isCollidingWithWalls(const sf::Vector2f& newPosition);
+
 	public:
 		Player();
 		void Movement();
