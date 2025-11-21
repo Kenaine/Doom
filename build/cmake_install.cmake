@@ -1,4 +1,4 @@
-# Install script for directory: /home/ken/projects/Doom
+# Install script for directory: /home/ken/repos/Doom
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ken/projects/Doom/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ken/repos/Doom/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
