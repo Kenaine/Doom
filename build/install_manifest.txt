@@ -1,0 +1,2 @@
+/home/ken/repos/Doom/build/_CPack_Packages/Linux/TGZ/Doom-Raycaster-1.0.0-Linux/./doom
+/home/ken/repos/Doom/build/_CPack_Packages/Linux/TGZ/Doom-Raycaster-1.0.0-Linux/./Assets/sprite.png
