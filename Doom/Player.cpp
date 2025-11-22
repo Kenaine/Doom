@@ -3,12 +3,14 @@
 #include "Player.h"
 #include "Wall.h"
 #include <cmath>
+#include <filesystem>
 
 Player::Player() : sprite(texture)
 {
-    std::string path = "Assets/sprite.png";
+    std::cout << std::filesystem::current_path() << std::endl;
+    std::string path = "../Assets/sprite.png";
 #ifdef _WIN32
-    path = "Assets\\sprite.png";
+    path = "..\\..\\Assets\\sprite.png";
 #endif
 
     if (!texture.loadFromFile(path)) {
@@ -16,7 +18,7 @@ Player::Player() : sprite(texture)
     }
     
     std::cout << "Texture size: " << texture.getSize().x << " x " << texture.getSize().y << std::endl;
-    
+
     // Create sprite with loaded texture
     sprite = sf::Sprite(texture);
     
@@ -25,13 +27,10 @@ Player::Player() : sprite(texture)
     sprite.setOrigin(sf::Vector2f(texture.getSize().x / 2.f, texture.getSize().y / 2.f));
     sprite.setRotation(rotation);
     
-    // Fixed scale
-    sprite.setScale(sf::Vector2f(1.5f, 1.5f));
 }
 
 void Player::Movement(const std::vector<Wall>& wallObjects)
 {
-    float speed = 5.0f;
     
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
     {
@@ -60,11 +59,11 @@ void Player::Movement(const std::vector<Wall>& wallObjects)
     
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
     {
-        rotation += sf::degrees(-3.0f);
+        rotation += sf::degrees(-rotationSpeed);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
     {
-        rotation += sf::degrees(3.0f);
+        rotation += sf::degrees(rotationSpeed);
     }
     
     // Apply rotation to sprite
@@ -73,17 +72,16 @@ void Player::Movement(const std::vector<Wall>& wallObjects)
 
 bool Player::isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects)
 {
-    float radius = 20.0f;
     
     // Check borders
-    if (newPosition.x - radius < 50.f || newPosition.x + radius > 1920 - 50.f ||
-        newPosition.y - radius < 50.f || newPosition.y + radius > 1080 - 50.f)
+    if (newPosition.x - size < 50.f || newPosition.x + size > 1920 - 50.f ||
+        newPosition.y - size < 50.f || newPosition.y + size > 1080 - 50.f)
         return true;
     
     // Check collision with all walls
     for (const auto& wall : wallObjects)
     {
-        if (wall.isCollidingWith(newPosition, radius))
+        if (wall.isCollidingWith(newPosition, size))
             return true;
     }
     
