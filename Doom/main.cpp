@@ -11,13 +11,9 @@ const float PLAYER_SIZE = 50.f;
 using namespace std;
 
 void InitializeWalls();
-void setWalls(sf::VertexArray*, sf::Vector2f, sf::Vector2f, sf::Vector2f, sf::Vector2f);
 void DrawObjects(sf::RenderWindow&);
 
-vector<sf::VertexArray*> Objects;
-std::vector<sf::VertexArray*> walls;
 std::vector<Wall> wallObjects;  // Add this to keep Wall objects alive
-RayCaster* rayCaster = nullptr;
 
 int main()
 {
@@ -25,7 +21,7 @@ int main()
     Player player;
 
     InitializeWalls();
-    // rayCaster is now initialized in InitializeWalls(), don't create it again here
+    RayCaster rayCaster(wallObjects);
 
     while (window.isOpen())
     {
@@ -36,28 +32,27 @@ int main()
         }
 
         player.Movement(wallObjects);
-        rayCaster->castRays(player);
+        rayCaster.castRays(player);
 
         window.clear(sf::Color::White);
         DrawObjects(window);
-        rayCaster->draw(window);
+        rayCaster.draw(window);
         window.draw(player.getSprite());
         window.display();
     }
 
-    delete rayCaster;
     return 0;
 }
 
 void InitializeWalls()
 {
-    sf::VertexArray* borderWalls = new sf::VertexArray(sf::PrimitiveType::LineStrip, 5);
-    setWalls(borderWalls, sf::Vector2f(0.f + BORDER_SIZE, 0.f + BORDER_SIZE), sf::Vector2f(SCREEN_WIDTH - BORDER_SIZE, 0.f + BORDER_SIZE),
-        sf::Vector2f(SCREEN_WIDTH - BORDER_SIZE, SCREEN_HEIGHT - BORDER_SIZE), sf::Vector2f(0.f + BORDER_SIZE, SCREEN_HEIGHT - BORDER_SIZE));
-
-    Objects.push_back(borderWalls);
-
     float thickness = 20.f;
+
+    //Create Boundary Walls
+    wallObjects.push_back(Wall(BORDER_SIZE, BORDER_SIZE, SCREEN_WIDTH - 2 * BORDER_SIZE, thickness)); // Top Wall
+    wallObjects.push_back(Wall(BORDER_SIZE, SCREEN_HEIGHT - BORDER_SIZE - thickness, SCREEN_WIDTH - 2 * BORDER_SIZE, thickness)); // Bottom Wall
+    wallObjects.push_back(Wall(BORDER_SIZE, BORDER_SIZE, thickness, SCREEN_HEIGHT - 2 * BORDER_SIZE)); // Left Wall
+    wallObjects.push_back(Wall(SCREEN_WIDTH - BORDER_SIZE - thickness, BORDER_SIZE, thickness, SCREEN_HEIGHT - 2 * BORDER_SIZE)); // Right Wall
     
     // Create all wall objects for collision and rendering
     wallObjects.push_back(Wall(100.f, 120.f, 250.f, thickness));
@@ -80,47 +75,28 @@ void InitializeWalls()
     wallObjects.push_back(Wall(100.f, 120.f, thickness, 700.f));     
     wallObjects.push_back(Wall(1800.f, 120.f, thickness, 700.f));
     
-    // Create vertex arrays for raycasting
-    std::vector<sf::VertexArray*> raycastWalls;
-    
-    for (auto& wall : wallObjects)
-    {
-        raycastWalls.push_back(wall.getVertices());
-    }
-    
-    std::vector<Wall*> wallPtrs;
-    for (auto& wall : wallObjects)
-    {
-        wallPtrs.push_back(&wall);
-    }
-    rayCaster = new RayCaster(wallPtrs);
 }
 
-void setWalls(sf::VertexArray* wall, sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3, sf::Vector2f point4)
+void setWalls(sf::VertexArray& wall, sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3, sf::Vector2f point4)
 {
-    (*wall)[0].position = point1;
-    (*wall)[1].position = point2;
-    (*wall)[2].position = point3;
-    (*wall)[3].position = point4;
-    (*wall)[4].position = point1;
+    wall[0].position = point1;
+    wall[1].position = point2;
+    wall[2].position = point3;
+    wall[3].position = point4;
+    wall[4].position = point1;
 
-    (*wall)[0].color = sf::Color::Red;
-    (*wall)[1].color = sf::Color::Red;
-    (*wall)[2].color = sf::Color::Red;
-    (*wall)[3].color = sf::Color::Red;
-    (*wall)[4].color = sf::Color::Red;
+    wall[0].color = sf::Color::Red;
+    wall[1].color = sf::Color::Red;
+    wall[2].color = sf::Color::Red;
+    wall[3].color = sf::Color::Red;
+    wall[4].color = sf::Color::Red;
 }
 
 void DrawObjects(sf::RenderWindow& window)
 {
-    for (int i = 0; i < Objects.size(); i++)
-    {
-        window.draw(*Objects[i]);
-    }
-    
     // Draw walls using vertex arrays
-    for (auto& wall : wallObjects)
+    for (auto wall : wallObjects)
     {
-        window.draw(*wall.getVertices());
+        window.draw(wall.getVertices());
     }
 }
