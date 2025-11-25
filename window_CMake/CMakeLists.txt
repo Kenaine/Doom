@@ -16,6 +16,7 @@ add_executable(doom
     ../Doom/main.cpp
     ../Doom/Player.cpp
     ../Doom/RayCaster.cpp
+    ../Doom/Render3D.cpp
 )
 target_compile_features(doom PRIVATE cxx_std_17)
 target_link_libraries(doom PRIVATE SFML::Graphics SFML::Window SFML::System SFML::Audio)

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "RayCaster.h"
 #include "Wall.h"
+#include "Render3D.h"
 
 const int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080, BORDER_SIZE = 50;
 const float PLAYER_SIZE = 50.f;
@@ -22,6 +23,7 @@ int main()
 
     InitializeWalls();
     RayCaster rayCaster(wallObjects);
+    Render3D renderer3D(static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT));
 
     while (window.isOpen())
     {
@@ -37,6 +39,7 @@ int main()
         window.clear(sf::Color::White);
         DrawObjects(window);
         rayCaster.draw(window);
+        renderer3D.draw(window, rayCaster.getDistances(), player.getSprite().getRotation().asRadians());
         window.draw(player.getSprite());
         window.display();
     }

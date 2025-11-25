@@ -14,10 +14,7 @@ class RayCaster
         RayCaster(std::vector<Wall>& wallObjects);  // Change parameter
         void castRays(Player& player);
         void draw(sf::RenderWindow& window);
-        sf::Vector2f castSingleRay(Player& player, float angle, float& distance);
-        bool lineIntersection(const sf::Vector2f& rayStart, const sf::Vector2f& rayEnd,
-            const sf::Vector2f& wallStart, const sf::Vector2f& wallEnd,
-            sf::Vector2f& intersection);
+        std::vector<float>& getDistances() { return distances; }
 
     private:
         std::vector<Wall> wallObjects;  
@@ -27,5 +24,10 @@ class RayCaster
         float maxRayDistance = 1000.f;
         int vertexCount = 60;
         sf::Angle fov = sf::degrees(60.f);
+
+        sf::Vector2f castSingleRay(Player& player, float angle, float& distance);
+        bool lineIntersection(const sf::Vector2f& rayStart, const sf::Vector2f& rayEnd,
+            const sf::Vector2f& wallStart, const sf::Vector2f& wallEnd,
+            sf::Vector2f& intersection);
 
 };
