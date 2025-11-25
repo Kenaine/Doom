@@ -22,7 +22,7 @@ class RayCaster
         sf::VertexArray rayFan;
         std::vector<float> distances;
 
-        float maxRayDistance = 500.f;
+        float maxRayDistance = 750.f;
         int vertexCount = 2400;
         sf::Angle fov = sf::degrees(60.f);
 

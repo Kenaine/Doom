@@ -5,7 +5,7 @@
 #include <cmath>
 #include <filesystem>
 
-Player::Player() : sprite(texture)
+Player::Player(std::vector<sf::Keyboard::Key>& movementKeys, float x, float y) : sprite(texture), movementKeys(movementKeys)
 {
     std::cout << std::filesystem::current_path() << std::endl;
     std::string path = "../Assets/sprite.png";
@@ -23,7 +23,7 @@ Player::Player() : sprite(texture)
     sprite = sf::Sprite(texture);
     
     // Start at bottom-right entrance
-    sprite.setPosition(sf::Vector2f(1800.f, 980.f));
+    sprite.setPosition(sf::Vector2f(x, y));
     sprite.setOrigin(sf::Vector2f(texture.getSize().x / 2.f, texture.getSize().y / 2.f));
     sprite.setRotation(rotation);
     
@@ -40,15 +40,15 @@ void Player::Movement(const std::vector<Wall>& wallObjects)
     sf::Vector2f movement(0.f, 0.f);
 
     // Forward / Backward
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+    if (sf::Keyboard::isKeyPressed(movementKeys[0]))
         movement += forward * speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+    if (sf::Keyboard::isKeyPressed(movementKeys[1]))
         movement -= forward * speed;
 
     // Rotation
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+    if (sf::Keyboard::isKeyPressed(movementKeys[2]))
         rotation += sf::degrees(-rotationSpeed);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+    if (sf::Keyboard::isKeyPressed(movementKeys[3]))
         rotation += sf::degrees(rotationSpeed);
 
     // Attempt full movement
