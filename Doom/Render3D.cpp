@@ -1,47 +1,53 @@
 #include <SFML/Graphics.hpp>
 #include "Render3D.h"
+#include <algorithm>
+#include <cmath>
 
 Render3D::Render3D(float width, float height) : screenWidth(width), screenHeight(height)
 {
-
 }
 
-void Render3D::draw(sf::RenderWindow& window, std::vector<float> distances, float fov)
+void Render3D::draw(sf::RenderWindow& window, std::vector<float> distances, float fovDegrees, float maxDistance)
 {
-    float sliceWidth = static_cast<float>(screenWidth) / distances.size();
-    float fovRad = fov * 3.14159265359f / 180.f;
-    float angleStep = fovRad / distances.size();
-    float startAngle = -fovRad / 2.f;
+    size_t numRays = distances.size();
+    if (numRays == 0) return;
 
-    for (size_t i = 0; i < distances.size(); i++)
+    float sliceWidth = static_cast<float>(screenWidth) / numRays;
+    float fovRad = fovDegrees * 3.14159265359f / 180.f;
+    float angleStep = fovRad / numRays;
+    float startAngle = -fovRad / 2.f; // rays relative to player viewing direction
+
+    for (size_t i = 0; i < numRays; i++)
     {
-        float distance = distances[i];
+        float rawDistance = distances[i];
 
-        if (distance >= 500)
-            continue;
-       
-        float rayAngle = startAngle + (angleStep * i);
+        // If distance is larger than maxDistance, fade it out smoothly
+        float alpha = 255.f;
+        if (rawDistance > maxDistance)
+        {
+            alpha = 0.f; // completely invisible
+            rawDistance = maxDistance; // cap for wall height calculation
+        }
+        else
+        {
+            // Fade based on distance (optional)
+            alpha = 255.f * (1.f - (rawDistance / maxDistance));
+        }
 
-        // Correct for fish-eye effect
-        float correctedDistance = distance * std::cos(rayAngle);
+        float rayAngle = startAngle + i * angleStep;
 
-        // Avoid division by zero and cap minimum distance
-        if (correctedDistance < 1.f) correctedDistance = 1.f;
+        // Correct fish-eye effect by dividing by cos(rayAngle)
+        float correctedDistance = rawDistance * std::cos(rayAngle);
+        if (correctedDistance < 1.f) correctedDistance = 1.f; // prevent division by zero
 
-        // Calculate wall height (perspective)
+        // Calculate wall height based on perspective
         float wallHeight = (screenHeight * 200.f) / correctedDistance;
 
-        // ---- Distance-based shading ----
-        // Brightness (fog)
+        // Optional: brightness/fog based on distance
         float brightness = 255.f / (1.f + (correctedDistance / 800.f));
         brightness = std::clamp(brightness, 0.f, 255.f);
 
-        // Alpha (fade-out)
-        float maxFadeDistance = 500.f;   // Adjust this for desired fade range
-        float alpha = 255.f * (1.f - (correctedDistance / maxFadeDistance));
-        alpha = std::clamp(alpha, 0.f, 255.f);
-
-        // Wall slice
+        // Draw wall slice
         sf::RectangleShape wallSlice(sf::Vector2f(sliceWidth, wallHeight));
         wallSlice.setPosition(sf::Vector2f(i * sliceWidth, (screenHeight - wallHeight) / 2.f));
         wallSlice.setFillColor(sf::Color(

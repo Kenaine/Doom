@@ -7,5 +7,5 @@ class Render3D
 
 	public:
 		Render3D(float, float);
-		void draw(sf::RenderWindow&, std::vector<float>, float);
+		void draw(sf::RenderWindow&, std::vector<float>, float, float);
 };

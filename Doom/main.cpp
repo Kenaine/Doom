@@ -39,7 +39,7 @@ int main()
         window.clear(sf::Color::White);
         DrawObjects(window);
         rayCaster.draw(window);
-        renderer3D.draw(window, rayCaster.getDistances(), player.getSprite().getRotation().asRadians());
+        renderer3D.draw(window, rayCaster.getDistances(), player.getSprite().getRotation().asRadians(), rayCaster.getMaxRayDistance());
         window.draw(player.getSprite());
         window.display();
     }

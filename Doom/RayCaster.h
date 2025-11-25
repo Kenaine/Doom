@@ -15,14 +15,15 @@ class RayCaster
         void castRays(Player& player);
         void draw(sf::RenderWindow& window);
         std::vector<float>& getDistances() { return distances; }
+        float getMaxRayDistance() const { return maxRayDistance; }
 
     private:
         std::vector<Wall> wallObjects;  
         sf::VertexArray rayFan;
         std::vector<float> distances;
 
-        float maxRayDistance = 1000.f;
-        int vertexCount = 60;
+        float maxRayDistance = 500.f;
+        int vertexCount = 2400;
         sf::Angle fov = sf::degrees(60.f);
 
         sf::Vector2f castSingleRay(Player& player, float angle, float& distance);
