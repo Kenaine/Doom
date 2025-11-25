@@ -31,44 +31,55 @@ Player::Player() : sprite(texture)
 
 void Player::Movement(const std::vector<Wall>& wallObjects)
 {
-    
+    sf::Vector2f pos = sprite.getPosition();
+
+    // Compute forward movement vector
+    float rad = degreesToRadians(rotation.asDegrees());
+    sf::Vector2f forward(std::cos(rad), std::sin(rad));
+
+    sf::Vector2f movement(0.f, 0.f);
+
+    // Forward / Backward
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-    {
-        float xVector = std::cos(degreesToRadians(rotation.asDegrees())) * speed;
-        float yVector = std::sin(degreesToRadians(rotation.asDegrees())) * speed;
-        
-        sf::Vector2f newPos = sprite.getPosition() + sf::Vector2f(xVector, yVector);
-        
-        if (!isCollidingWithWalls(newPos, wallObjects))
-        {
-            sprite.setPosition(newPos);
-        }
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-    {
-        float xVector = std::cos(degreesToRadians(rotation.asDegrees())) * speed;
-        float yVector = std::sin(degreesToRadians(rotation.asDegrees())) * speed;
-        
-        sf::Vector2f newPos = sprite.getPosition() + sf::Vector2f(-xVector, -yVector);
-        
-        if (!isCollidingWithWalls(newPos, wallObjects))
-        {
-            sprite.setPosition(newPos);
-        }
-    }
-    
+        movement += forward * speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        movement -= forward * speed;
+
+    // Rotation
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-    {
         rotation += sf::degrees(-rotationSpeed);
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         rotation += sf::degrees(rotationSpeed);
+
+    // Attempt full movement
+    sf::Vector2f newPos = pos + movement;
+
+    bool blockedFull = isCollidingWithWalls(newPos, wallObjects);
+
+    if (!blockedFull)
+    {
+        sprite.setPosition(newPos);
     }
-    
-    // Apply rotation to sprite
+    else
+    {
+        // Try X axis only
+        sf::Vector2f tryX(pos.x + movement.x, pos.y);
+        bool blockedX = isCollidingWithWalls(tryX, wallObjects);
+
+        // Try Y axis only
+        sf::Vector2f tryY(pos.x, pos.y + movement.y);
+        bool blockedY = isCollidingWithWalls(tryY, wallObjects);
+
+        if (!blockedX)
+            sprite.setPosition(tryX);
+        else if (!blockedY)
+            sprite.setPosition(tryY);
+        // else: both blocked → no move
+    }
+
     sprite.setRotation(rotation);
 }
+
 
 bool Player::isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects)
 {

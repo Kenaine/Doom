@@ -1,164 +1,106 @@
 #include "RayCaster.h"
-#include "Wall.h"
+#include "Player.h"
 #include <iostream>
-#include <limits>
 
-RayCaster::RayCaster(std::vector<Wall>& objects) : objects(objects)
+RayCaster::RayCaster(std::vector<Wall>& wallObjects)
+    : wallObjects(wallObjects)
 {
-    distances.reserve(vertexCount);
-    fan = sf::VertexArray(sf::PrimitiveType::TriangleFan, vertexCount + 2);
+    rayFan = sf::VertexArray(sf::PrimitiveType::TriangleFan, vertexCount + 2);
+    distances.reserve(vertexCount + 1);
 }
 
 void RayCaster::castRays(Player& player)
 {
-	//Get player position and 
-	distances.clear();
-	sf::Vector2f playerPos = player.getSprite().getPosition();
-	sf::Angle playerRot = player.getSprite().getRotation();
+    distances.clear();
 
-	//initialize  and last vertex of the fan to player position
-	fan[0].position = playerPos;
-	fan[vertexCount + 1].position = playerPos;
+    sf::Vector2f playerPos = player.getSprite().getPosition();
+    float playerRot = player.getSprite().getRotation().asRadians();
 
-	//Loop through the fov and cast rays and return closest intersection point
-	float fovRad = fov.asRadians();
-	float startAngle = playerRot.asRadians() - (fovRad / 2.f);
-	float endAngle = playerRot.asRadians() + (fovRad / 2.f);
+    rayFan[0].position = playerPos;             // center of the fan
+    rayFan[vertexCount + 1].position = playerPos;
 
-	float steps = fovRad / vertexCount;
+    float fovRad = fov.asRadians();
+    float startAngle = playerRot - (fovRad * 0.5f);
+    float angleStep = fovRad / vertexCount;
 
-	for (int i = 0; i <= vertexCount; i++)
-	{
-		//find second point of the ray based on angle and max distance
-		float currentAngle = startAngle + (steps * i);
-		float xPos = playerPos.x + cos(currentAngle) * maxDistance;
-		float yPos = playerPos.y + sin(currentAngle) * maxDistance;
+    for (int i = 0; i <= vertexCount; i++)
+    {
+        float angle = startAngle + angleStep * i;
+        float distance = 0.f;
 
-		sf::Vector2f rayEndPoint = sf::Vector2f(xPos, yPos);
+        sf::Vector2f hit = castSingleRay(player, angle, distance);
 
-		float distance = 0.f;
+        rayFan[i + 1].position = hit;
+        rayFan[i + 1].color = sf::Color(0, 0, 255, 120);
 
-		//check if ray intersects with any objects and get closest intersection point
-		sf::Vector2f point = findIntersectionPoint(playerPos, rayEndPoint, distance);
-
-		//Set fan vertices based on intersection points
-		fan[i + 1].position = point;
-		fan[i + 1].color = sf::Color::Blue; 
-
-		distances.push_back(distance);
-	}
+        distances.push_back(distance);
+    }
 }
 
-sf::Vector2f RayCaster::findIntersectionPoint(sf::Vector2f rayStart, sf::Vector2f rayEnd, float& closestDistance)
+sf::Vector2f RayCaster::castSingleRay(Player& player, float angle, float& distance)
 {
-	float a1, b1, c1; //ray line coefficients
+    sf::Vector2f start = player.getSprite().getPosition();
+    sf::Vector2f dir(std::cos(angle), std::sin(angle));
+    sf::Vector2f end = start + dir * maxRayDistance;
 
-	//get line coefficients for the ray
-	twoPointToLine(rayStart, rayEnd, a1, b1, c1);
-	sf::Vector2f closestPoint = rayEnd;
-	closestDistance = maxDistance;
+    float closestDistSq = maxRayDistance * maxRayDistance;
+    sf::Vector2f closestPoint = end;
 
-	//loop through all objects to check for intersection
-	for (auto object : objects)
-	{
-        sf::VertexArray vertexArr = object.getVertices();
-		//loop through each line segment in the object
-		for (int i = 0; i < vertexArr.getVertexCount() - 1; i++)
-		{
-			sf::Vector2f intersectionPoint;
-			float a2, b2, c2; //wall line coefficients
-			//get line coefficients for the wall segment
-            twoPointToLine(vertexArr[i].position, vertexArr[i + 1].position, a2, b2, c2);
-			//check intersection
-			float line1[3] = { a1, b1, c1 }, line2[3] = { a2, b2, c2 };
-			if (checkIntersection(line1, line2, intersectionPoint))
-			{
-                //check if intersection point is inbetween the wall segment points
-                if (!checkPointOnSegment(intersectionPoint, vertexArr[i].position, vertexArr[i + 1].position))
-                   continue;
+    for (const Wall& wall : wallObjects)
+    {
+        const sf::VertexArray& verts = wall.getVertices();
 
-				//check if intersection point is infront of the ray start point
-				//if the sum between the distance between ray start and intersection point and intersection and ray end is equal
-				//to the distance between ray start and ray end, then the intersection point is infront of the ray start point
-				//calculate distance
-				float distanceToIntersection = sqrt(pow(intersectionPoint.x - rayStart.x, 2) + pow(intersectionPoint.y - rayStart.y, 2));
-				float distanceToEnd = sqrt(pow(rayEnd.x - intersectionPoint.x, 2) + pow(rayEnd.y - intersectionPoint.y, 2));
+        for (size_t i = 0; i < verts.getVertexCount() - 1; i++)
+        {
+            sf::Vector2f A = verts[i].position;
+            sf::Vector2f B = verts[i + 1].position;
 
-				float totalDistance = distanceToIntersection + distanceToEnd;
+            sf::Vector2f hit;
+            if (lineIntersection(start, end, A, B, hit))
+            {
+                sf::Vector2f d = hit - start;
+                float distSq = d.x * d.x + d.y * d.y;
 
-				float difference = std::abs(maxDistance - totalDistance);
-				
-				if (std::round(difference) == 0 && 
-					distanceToIntersection < closestDistance)
-				{
-					closestDistance = distanceToIntersection;
-					closestPoint = intersectionPoint;
-				}
-			}
-		}
-	}
+                if (distSq < closestDistSq)
+                {
+                    closestDistSq = distSq;
+                    closestPoint = hit;
+                }
+            }
+        }
+    }
 
-
-	return closestPoint;
+    distance = std::sqrt(closestDistSq);
+    return closestPoint;
 }
 
-void RayCaster::twoPointToLine(sf::Vector2f point1, sf::Vector2f point2, float& a, float& b, float& c)
+bool RayCaster::lineIntersection(const sf::Vector2f& rayStart, const sf::Vector2f& rayEnd,
+                                 const sf::Vector2f& wallStart, const sf::Vector2f& wallEnd,
+                                 sf::Vector2f& intersection)
 {
-	//if vertical line
-	if (point1.x == point2.x)
-	{
-		a = 1.f;
-		b = 0.f;
-		c = -point1.x;
-	}
-	else if (point1.y == point2.y) //if horizontal line
-	{
-		a = 0.f;
-		b = 1.f;
-		c = -point1.y;
-	}
-	else //anything else
-	{
-		//calculate slope m ((y2 - y1) / (x2 - x1)	
-		float m = (point2.y - point1.y) / (point2.x - point1.x);
-		//multiply m out y - y1 = mx - mx1
-		float mx1 = m * -point1.x;
-		//add y1 to both sides y = mx + (- mx1 + y1)
-		c = mx1 + point1.y;
-		//rearrange to general form ax + by + c = 0
-		a = m;
-		b = -1.f;
-	}
-	
-}
+    float x1 = rayStart.x, y1 = rayStart.y;
+    float x2 = rayEnd.x,   y2 = rayEnd.y;
+    float x3 = wallStart.x, y3 = wallStart.y;
+    float x4 = wallEnd.x,   y4 = wallEnd.y;
 
-//check intersection between two lines in general form ax + by + c = 0
-//line1[0] = a, line1[1] = b, line1[2] = c
-bool RayCaster::checkIntersection(float line1[3], float line2[3], sf::Vector2f& intersectionPoint)
-{
-	//if slope is the same, lines are parallel
-	if (line1[0] == line2[0])
-		return false;
+    float den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (den == 0) return false; // parallel
 
-	//calculate intersection point
-	intersectionPoint.x = (line1[1] * line2[2] - line2[1] * line1[2]) / (line1[0] * line2[1] - line2[0] * line1[1]);
-	intersectionPoint.y = (line2[0] * line1[2] - line1[0] * line2[2]) / (line1[0] * line2[1] - line2[0] * line1[1]);
+    float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+    float u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 
-	return true;
-}
+    // t must be within ray (>= 0), and u must be on the wall (0-1)
+    if (t >= 0 && u >= 0 && u <= 1)
+    {
+        intersection.x = x1 + t * (x2 - x1);
+        intersection.y = y1 + t * (y2 - y1);
+        return true;
+    }
 
-bool RayCaster::checkPointOnSegment(const sf::Vector2f& point, const sf::Vector2f& segStart, const sf::Vector2f& segEnd)
-{
-    float minX = std::min(segStart.x, segEnd.x);
-    float maxX = std::max(segStart.x, segEnd.x);
-    float minY = std::min(segStart.y, segEnd.y);
-    float maxY = std::max(segStart.y, segEnd.y);
-
-    return (point.x >= minX && point.x <= maxX &&
-            point.y >= minY && point.y <= maxY);
+    return false;
 }
 
 void RayCaster::draw(sf::RenderWindow& window)
 {
-    window.draw(fan);
+    window.draw(rayFan);
 }

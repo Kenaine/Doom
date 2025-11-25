@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include "Player.h"
+#include "Wall.h"
 
 class Wall;
 
@@ -13,20 +14,18 @@ class RayCaster
         RayCaster(std::vector<Wall>& wallObjects);  // Change parameter
         void castRays(Player& player);
         void draw(sf::RenderWindow& window);
+        sf::Vector2f castSingleRay(Player& player, float angle, float& distance);
+        bool lineIntersection(const sf::Vector2f& rayStart, const sf::Vector2f& rayEnd,
+            const sf::Vector2f& wallStart, const sf::Vector2f& wallEnd,
+            sf::Vector2f& intersection);
 
     private:
-        std::vector<Wall> objects;  
-        sf::VertexArray fan;
+        std::vector<Wall> wallObjects;  
+        sf::VertexArray rayFan;
         std::vector<float> distances;
 
-        float maxDistance = 1000.f;
+        float maxRayDistance = 1000.f;
         int vertexCount = 60;
         sf::Angle fov = sf::degrees(60.f);
-
-        sf::Vector2f findIntersectionPoint(sf::Vector2f, sf::Vector2f, float&);
-        void twoPointToLine(sf::Vector2f, sf::Vector2f, float&, float&, float&);
-        bool checkIntersection(float[3], float[3], sf::Vector2f&);
-        bool checkPointOnSegment(const sf::Vector2f&, const sf::Vector2f&, const sf::Vector2f&);
-
 
 };

@@ -26,6 +26,7 @@ public:
     }
 
     sf::VertexArray& getVertices() { return vertices; }
+    const sf::VertexArray& getVertices() const { return vertices; }
     
     bool isCollidingWith(const sf::Vector2f& position, float radius) const
     {
