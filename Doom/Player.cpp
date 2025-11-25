@@ -31,24 +31,24 @@ Player::Player(std::vector<sf::Keyboard::Key>& movementKeys, float x, float y) :
 
 void Player::Movement(const std::vector<Wall>& wallObjects)
 {
-    sf::Vector2f pos = sprite.getPosition();
+    sf::Vector2f pos = this->sprite.getPosition();
 
     // Compute forward movement vector
-    float rad = degreesToRadians(rotation.asDegrees());
+    float rad = degreesToRadians(this->rotation.asDegrees());
     sf::Vector2f forward(std::cos(rad), std::sin(rad));
 
     sf::Vector2f movement(0.f, 0.f);
 
     // Forward / Backward
-    if (sf::Keyboard::isKeyPressed(movementKeys[0]))
+    if (sf::Keyboard::isKeyPressed(this->movementKeys[0]))
         movement += forward * speed;
-    if (sf::Keyboard::isKeyPressed(movementKeys[1]))
+    if (sf::Keyboard::isKeyPressed(this->movementKeys[1]))
         movement -= forward * speed;
 
     // Rotation
-    if (sf::Keyboard::isKeyPressed(movementKeys[2]))
+    if (sf::Keyboard::isKeyPressed(this->movementKeys[2]))
         rotation += sf::degrees(-rotationSpeed);
-    if (sf::Keyboard::isKeyPressed(movementKeys[3]))
+    if (sf::Keyboard::isKeyPressed(this->movementKeys[3]))
         rotation += sf::degrees(rotationSpeed);
 
     // Attempt full movement
