@@ -20,7 +20,9 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "SFML works!", sf::Style::Default, sf::State::Windowed);
     sf::View player1View(sf::FloatRect({0.f, 0.f}, {static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT)}));
+    sf::View player2View(sf::FloatRect({0.f, 0.f}, {static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT)}));
     player1View.setViewport(sf::FloatRect({0.f, 0.f}, {0.5f, 0.5f}));
+    player2View.setViewport(sf::FloatRect({0.5f, 0.5f}, {0.5f, 0.5f}));
     window.setView(player1View);
 
     vector<sf::Keyboard::Key> movementKeys = {sf::Keyboard::Key::W, sf::Keyboard::Key::S, sf::Keyboard::Key::A, sf::Keyboard::Key::D};
@@ -36,6 +38,7 @@ int main()
 
     while (window.isOpen())
     {
+        window.setView(player1View);
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
@@ -48,11 +51,13 @@ int main()
         rayCaster.castRays(player);
         rayCaster2.castRays(player2);   
 
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Black);
         //DrawObjects(window);
         //rayCaster.draw(window);
         //rayCaster2.draw(window);
-        renderer3D.draw(window, rayCaster.getDistances(), player.getSprite().getRotation().asRadians(), rayCaster.getMaxRayDistance());
+        renderer3D.draw(window, rayCaster.getDistances(), rayCaster.getFOV(), rayCaster.getMaxRayDistance());
+        window.setView(player2View);
+        renderer3D.draw(window, rayCaster2.getDistances(), rayCaster2.getFOV(), rayCaster2.getMaxRayDistance());
         //window.draw(player.getSprite());
         window.display();
     }

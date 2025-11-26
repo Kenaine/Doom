@@ -41,17 +41,17 @@ void Render3D::draw(sf::RenderWindow& window, std::vector<float> distances, floa
         if (correctedDistance < 1.f) correctedDistance = 1.f; // prevent division by zero
 
         // Calculate wall height based on perspective
-        float wallHeight = (screenHeight * 200.f) / correctedDistance;
+        float wallHeight = ((screenHeight * 200.f) / correctedDistance) ;
 
         // Optional: brightness/fog based on distance
         float brightness = 255.f / (1.f + (correctedDistance / 800.f));
         brightness = std::clamp(brightness, 0.f, 255.f);
 
         // Draw ceiling slice
-        sf::RectangleShape ceilingSlice(sf::Vector2f(sliceWidth, (screenHeight - wallHeight) / 2.f));
+        /*sf::RectangleShape ceilingSlice(sf::Vector2f(sliceWidth, (screenHeight - wallHeight) / 2.f));
         ceilingSlice.setPosition(sf::Vector2f(i * sliceWidth, 0.f));
         ceilingSlice.setFillColor(sf::Color(25, 100, 100, static_cast<int>(alpha))); // gray ceiling
-        window.draw(ceilingSlice);
+        window.draw(ceilingSlice);*/
 
         // Draw floor slice
 

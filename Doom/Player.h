@@ -17,7 +17,7 @@ private:
     sf::Sprite sprite;
     sf::Texture texture;
     sf::Angle rotation;
-    float speed = 2.2f, rotationSpeed = 2.2f, size = 20.f;
+    float speed = 5.f, rotationSpeed = 2.2f, size = 20.f;
     
     float degreesToRadians(float degrees);
     bool isCollidingWithWalls(const sf::Vector2f& newPosition, const std::vector<Wall>& wallObjects);
