@@ -2,6 +2,8 @@
 #include "Player.h"
 #include <algorithm>
 #include <iostream>
+#include <thread>
+#include <vector>
 
 RayCaster::RayCaster(std::vector<Wall>& wallObjects)
     : wallObjects(wallObjects)
@@ -64,6 +66,7 @@ void RayCaster::checkPlayerOnView(Player& player, Player& otherPlayer)
 void RayCaster::castRays(Player& player)
 {
     distances.clear();
+    distances.resize(vertexCount + 1);
 
     sf::Vector2f playerPos = player.getSprite().getPosition();
     float playerRot = player.getSprite().getRotation().asRadians();
@@ -75,17 +78,43 @@ void RayCaster::castRays(Player& player)
     float startAngle = playerRot - (fovRad * 0.5f);
     float angleStep = fovRad / vertexCount;
 
-    for (int i = 0; i <= vertexCount; i++)
+    // Use number of threads based on hardware
+    int numThreads = std::thread::hardware_concurrency();
+    if (numThreads == 0) numThreads = 4; // fallback
+    
+    int raysPerThread = (vertexCount + 1) / numThreads;
+    std::vector<std::thread> threads;
+    
+    // Lambda function to cast rays for a range
+    auto castRayRange = [this, &player, startAngle, angleStep](int startIdx, int endIdx)
     {
-        float angle = startAngle + angleStep * i;
-        float distance = 0.f;
+        for (int i = startIdx; i <= endIdx && i <= vertexCount; i++)
+        {
+            float angle = startAngle + angleStep * i;
+            float distance = 0.f;
 
-        sf::Vector2f hit = castSingleRay(player, angle, distance);
+            sf::Vector2f hit = castSingleRay(player, angle, distance);
 
-        rayFan[i + 1].position = hit;
-        rayFan[i + 1].color = sf::Color(0, 0, 255, 120);
+            rayFan[i + 1].position = hit;
+            rayFan[i + 1].color = sf::Color(0, 0, 255, 120);
 
-        distances.push_back(distance);
+            distances[i] = distance;
+        }
+    };
+    
+    // Create threads to cast rays in parallel
+    for (int t = 0; t < numThreads; t++)
+    {
+        int startIdx = t * raysPerThread;
+        int endIdx = (t == numThreads - 1) ? vertexCount : (t + 1) * raysPerThread - 1;
+        
+        threads.emplace_back(castRayRange, startIdx, endIdx);
+    }
+    
+    // Wait for all threads to finish
+    for (auto& thread : threads)
+    {
+        thread.join();
     }
 }
 
