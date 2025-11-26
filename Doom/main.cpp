@@ -49,15 +49,50 @@ int main()
         player2.Movement(wallObjects);
         
         rayCaster.castRays(player);
+        rayCaster.checkPlayerOnView(player, player2);
+
         rayCaster2.castRays(player2);   
+        rayCaster2.checkPlayerOnView(player2, player);
 
         window.clear(sf::Color::Black);
         //DrawObjects(window);
         //rayCaster.draw(window);
         //rayCaster2.draw(window);
         renderer3D.draw(window, rayCaster.getDistances(), rayCaster.getFOV(), rayCaster.getMaxRayDistance());
+        if (rayCaster.isPlayerInView())
+        {
+            renderer3D.drawPlayer(
+                window,
+                player.getSprite().getPosition(),
+                rayCaster.getLastKnownPlayerPos(),
+                player.getSprite().getRotation().asRadians(),
+                rayCaster.getFOV(),
+                30.f, // world size of other player
+                rayCaster.getMaxRayDistance(),
+                rayCaster.getDistances().size(),
+                player2.getSprite().getRotation().asRadians()
+            );
+        }
+
+
         window.setView(player2View);
         renderer3D.draw(window, rayCaster2.getDistances(), rayCaster2.getFOV(), rayCaster2.getMaxRayDistance());
+        if (rayCaster2.isPlayerInView())
+        {
+            renderer3D.drawPlayer(
+                window,
+                player2.getSprite().getPosition(),
+                rayCaster2.getLastKnownPlayerPos(),
+                player2.getSprite().getRotation().asRadians(),
+                rayCaster2.getFOV(),
+                30.f, // world size of other player
+                rayCaster2.getMaxRayDistance(),
+                rayCaster2.getDistances().size(),
+                player.getSprite().getRotation().asRadians()
+            );
+        }
+
+
         //window.draw(player.getSprite());
         window.display();
     }

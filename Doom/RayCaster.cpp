@@ -1,5 +1,6 @@
 #include "RayCaster.h"
 #include "Player.h"
+#include <algorithm>
 #include <iostream>
 
 RayCaster::RayCaster(std::vector<Wall>& wallObjects)
@@ -8,6 +9,57 @@ RayCaster::RayCaster(std::vector<Wall>& wallObjects)
     rayFan = sf::VertexArray(sf::PrimitiveType::TriangleFan, vertexCount + 2);
     distances.reserve(vertexCount + 1);
 }
+
+void RayCaster::checkPlayerOnView(Player& player, Player& otherPlayer)
+{
+    sf::Vector2f playerPos = player.getSprite().getPosition();
+    sf::Vector2f otherPos = otherPlayer.getSprite().getPosition();
+    sf::Vector2f toOther = otherPos - playerPos;
+    float distanceToOther = std::sqrt(toOther.x * toOther.x + toOther.y * toOther.y);
+
+    float playerRot = player.getSprite().getRotation().asRadians();
+    float fovRad = fov.asRadians();
+
+    // Compute angle to other player relative to player rotation
+    float angleToOther = std::atan2(toOther.y, toOther.x);
+    float relativeAngle = angleToOther - playerRot;
+
+    // Normalize angle to [-PI, PI]
+    while (relativeAngle < -3.14159265f) relativeAngle += 2.f * 3.14159265f;
+    while (relativeAngle >  3.14159265f) relativeAngle -= 2.f * 3.14159265f;
+
+    // Quick FOV & distance check
+    if (std::abs(relativeAngle) > fovRad / 2.f || distanceToOther > maxRayDistance)
+    {
+        playerInView = false;
+        return;
+    }
+
+    // --- Determine which ray in the fan corresponds to the other player ---
+    size_t numRays = distances.size();
+    float startAngle = -fovRad / 2.f;
+    float angleStep = fovRad / static_cast<float>(numRays);
+
+    size_t rayIndex = static_cast<size_t>((relativeAngle - startAngle) / angleStep);
+    rayIndex = std::clamp(rayIndex, size_t(0), numRays - 1);
+
+    // Compare distance along that ray to the distance to the other player
+    float rayDistance = distances[rayIndex];
+
+    if (distanceToOther <= rayDistance)
+    {
+        // No wall in between, player is visible
+        playerInView = true;
+        lastKnownPlayerPos = otherPos;
+        lastKnownPlayerdistance = distanceToOther;
+    }
+    else
+    {
+        // Wall blocks view
+        playerInView = false;
+    }
+}
+
 
 void RayCaster::castRays(Player& player)
 {

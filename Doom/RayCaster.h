@@ -19,11 +19,17 @@ class RayCaster
         std::vector<float>& getDistances() { return distances; }
         float getMaxRayDistance() const { return maxRayDistance; }
         float getFOV() const { return fov.asDegrees(); }
+        bool isPlayerInView() const { return playerInView; }
+        sf::Vector2f getLastKnownPlayerPos() const { return lastKnownPlayerPos ;}
 
     private:
         std::vector<Wall> wallObjects;  
         sf::VertexArray rayFan;
         std::vector<float> distances;
+
+        bool playerInView = false;
+        sf::Vector2f lastKnownPlayerPos;
+        float lastKnownPlayerdistance = 0.f;
 
         float maxRayDistance = 5000.f;
         int vertexCount = 2400;
